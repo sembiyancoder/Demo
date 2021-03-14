@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,7 +36,13 @@ public class ViewSalesListAdapter extends RecyclerView.Adapter<ViewSalesListAdap
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         JSONObject object = mSalesJsonArray.optJSONObject(position);
-        holder.mCustomerName.setText(object.optString("name"));
+        JSONArray jsonArray = object.optJSONArray("partner_id");
+        String name = jsonArray.optString(1);
+        holder.mNameTextView.setText(name);
+        holder.mAmountTextView.setText("Rs." + object.optString("amount_total"));
+        holder.mOrderNoTextView.setText(object.optString("name"));
+        holder.mOrderStatusTextView.setText(object.optString("invoice_status"));
+        holder.mDateTimeTextView.setText(object.optString("confirmation_date"));
     }
 
     @Override
@@ -50,11 +57,16 @@ public class ViewSalesListAdapter extends RecyclerView.Adapter<ViewSalesListAdap
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mCustomerName;
+        private TextView mNameTextView, mAmountTextView, mOrderNoTextView, mOrderStatusTextView, mDateTimeTextView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            mCustomerName = itemView.findViewById(R.id.txt_customer_name);
+            mNameTextView = itemView.findViewById(R.id.txt_customer_name);
+            mAmountTextView = itemView.findViewById(R.id.txt_customer_amount);
+            mOrderNoTextView = itemView.findViewById(R.id.txt_order_no);
+            mOrderStatusTextView = itemView.findViewById(R.id.txt_order_status);
+            mDateTimeTextView = itemView.findViewById(R.id.txt_date_time);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

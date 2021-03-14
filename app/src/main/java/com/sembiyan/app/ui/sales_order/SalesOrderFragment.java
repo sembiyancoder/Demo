@@ -99,7 +99,7 @@ public class SalesOrderFragment extends Fragment implements ViewSalesListAdapter
                 params.put("model", Constants.SALES_ORDER);
                 params.put("limit", Constants.LIMITS);
                 params.put("fields", getFields());
-                //params.put("domain", "[[\"rfid_number\",\"=\"," + "\"" + strDomain + "\"" + "]]");
+                params.put("domain", getDomain());
                 return params;
             }
         };
@@ -124,6 +124,10 @@ public class SalesOrderFragment extends Fragment implements ViewSalesListAdapter
                 "      \"invoice_status\",\n" +
                 "      \"state\"\n" +
                 "    ]";
+    }
+
+    private String getDomain() {
+        return "[[\"state\",\"not in\",[\"draft\",\"sent\",\"cancel\"]]]";
     }
 
     @Override
