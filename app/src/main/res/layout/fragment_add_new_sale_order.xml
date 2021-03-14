@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="8dp"
-    tools:context=".ui.sales_order.AddNewSaleOrderActivity">
+    tools:context=".ui.sales_order.AddNewSaleOrderFragment">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -50,8 +50,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerInParent="true"
-                        android:paddingLeft="8dp"
-                        android:src="@drawable/ic_add_new_customer" />
+                        android:src="@drawable/ic_add_new_customer"
+                        android:paddingLeft="8dp" />
 
                 </RelativeLayout>
 
@@ -95,8 +95,9 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerInParent="true"
-                        android:paddingLeft="16dp"
-                        android:src="@drawable/ic_add_new_customer" />
+                        android:paddingLeft="8dp"
+                        android:src="@drawable/ic_add_new_customer"
+                        android:paddingStart="8dp" />
 
                 </RelativeLayout>
 
