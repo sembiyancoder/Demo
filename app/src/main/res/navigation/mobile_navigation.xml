@@ -15,6 +15,32 @@
         android:id="@+id/nav_sales_order"
         android:name="com.sembiyan.app.ui.sales_order.SalesOrderFragment"
         android:label="@string/menu_sales_order"
-        tools:layout="@layout/fragment_sales_order" />
+        tools:layout="@layout/fragment_sales_order">
+        <action
+            android:id="@+id/action_nav_sales_order_to_addNewSaleOrderFragment"
+            app:destination="@id/addNewSaleOrderFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/addNewSaleOrderFragment"
+        android:name="com.sembiyan.app.ui.sales_order.AddNewSaleOrderFragment"
+        android:label="New Sales Order"
+        tools:layout="@layout/fragment_add_new_sale_order">
+        <action
+            android:id="@+id/action_addNewSaleOrderFragment_to_addItemFragment"
+            app:destination="@id/addItemFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/addItemFragment"
+        android:name="com.sembiyan.app.ui.item.AddItemFragment"
+        android:label="Add Line Item"
+        tools:layout="@layout/fragment_add_item" />
 
 </navigation>

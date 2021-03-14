@@ -1,12 +1,17 @@
 package com.sembiyan.app.ui.item;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -16,6 +21,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.sembiyan.app.R;
+import com.sembiyan.app.databinding.FragmentAddItemBinding;
 import com.sembiyan.app.model.ItemModel;
 import com.sembiyan.app.ui.sales_order.SalesOrderFragment;
 import com.sembiyan.app.utilities.AppController;
@@ -32,22 +38,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AddItemActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ * create an instance of this fragment.
+ */
+public class AddItemFragment extends Fragment {
 
-    private AutoCompleteTextView mItemAutoCompleteTextView;
+    private FragmentAddItemBinding binding;
     private List<ItemModel> mItemModelList = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_item);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        inflateXMLView();
-        getItemList();
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentAddItemBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
-    private void inflateXMLView() {
-        mItemAutoCompleteTextView = findViewById(R.id.auto_complete_item_name);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        getItemList();
     }
 
     public void getItemList() {
@@ -76,7 +88,7 @@ public class AddItemActivity extends AppCompatActivity {
                                 setAdapter();
                             }
                         } else {
-                            Toast.makeText(AddItemActivity.this, Utils.getErrorMessage(jsonObject), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), Utils.getErrorMessage(jsonObject), Toast.LENGTH_SHORT).show();
                         }
                     }
                 } catch (JSONException e) {
@@ -94,7 +106,7 @@ public class AddItemActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 //set authorization token in with the type via Bearer token
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization", "Bearer " + Utils.getLoginDetails(AddItemActivity.this, Constants.ACCESS_TOKEN));
+                params.put("Authorization", "Bearer " + Utils.getLoginDetails(getContext(), Constants.ACCESS_TOKEN));
                 return params;
             }
 
@@ -122,12 +134,17 @@ public class AddItemActivity extends AppCompatActivity {
             test.add(customerModel.getName());
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.layout_customer_name_list, test);
-        mItemAutoCompleteTextView.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.layout_customer_name_list, test);
+        binding.autoCompleteItemName.setAdapter(adapter);
     }
 
     private String getFields() {
         return "[\"display_name\",\"id\"]";
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

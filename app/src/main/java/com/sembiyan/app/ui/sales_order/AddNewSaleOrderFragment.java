@@ -2,17 +2,20 @@ package com.sembiyan.app.ui.sales_order;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -21,17 +24,17 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.google.android.material.button.MaterialButton;
 import com.sembiyan.app.R;
+import com.sembiyan.app.databinding.FragmentAddNewSaleOrderBinding;
 import com.sembiyan.app.model.CustomerModel;
 import com.sembiyan.app.model.ProductPriceModel;
 import com.sembiyan.app.ui.customer.AddNewCustomerActivity;
-import com.sembiyan.app.ui.item.AddItemActivity;
 import com.sembiyan.app.utilities.AppController;
 import com.sembiyan.app.utilities.Constants;
 import com.sembiyan.app.utilities.Utils;
 import com.sembiyan.app.utilities.WebserviceEndpoints;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,49 +44,54 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AddNewSaleOrderActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ * create an instance of this fragment.
+ */
+public class AddNewSaleOrderFragment extends Fragment {
 
-    private ImageView mAddNewCustomerView;
+    private FragmentAddNewSaleOrderBinding binding;
     private List<CustomerModel> mCustomerModelList = new ArrayList<>();
     private List<ProductPriceModel> mProductPriceList = new ArrayList<>();
-    private AutoCompleteTextView mCustomerAutoCompleteTextView, mProductListAutoCompleteTextView;
-    private TextView mCustomerNotFound, mPriceListTextView;
-    private MaterialButton mAddItemMaterialButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_sale_order);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    public View onCreateView(@NotNull LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentAddNewSaleOrderBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         inflateXMLView();
         getCustomerList();
+
     }
 
     private void inflateXMLView() {
-        mCustomerNotFound = findViewById(R.id.txt_customer_not_found);
-        mAddNewCustomerView = findViewById(R.id.image_add_new_customer);
-        mPriceListTextView = findViewById(R.id.txt_product_list_not_found);
-        mCustomerAutoCompleteTextView = findViewById(R.id.auto_complete_customer_name);
-        mProductListAutoCompleteTextView = findViewById(R.id.auto_complete_product_price_list);
-        mAddItemMaterialButton = findViewById(R.id.btn_add_item);
 
-        mAddNewCustomerView.setOnClickListener(new View.OnClickListener() {
+        binding.imageAddNewCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AddNewSaleOrderActivity.this, AddNewCustomerActivity.class);
+                Intent intent = new Intent(getContext(), AddNewCustomerActivity.class);
                 startActivity(intent);
             }
         });
 
-        mAddItemMaterialButton.setOnClickListener(new View.OnClickListener() {
+        binding.btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AddNewSaleOrderActivity.this, AddItemActivity.class);
-                startActivity(intent);
+               /* Intent intent = new Intent(getContext(), AddItemActivity.class);
+                startActivity(intent);*/
+
+                Navigation.findNavController(v).navigate(R.id.action_addNewSaleOrderFragment_to_addItemFragment);
             }
         });
 
-        mCustomerAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
+        binding.autoCompleteCustomerName.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
@@ -97,18 +105,18 @@ public class AddNewSaleOrderActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 1) {
-                    if (!mCustomerAutoCompleteTextView.isPopupShowing()) {
-                        mCustomerNotFound.setVisibility(View.VISIBLE);
+                    if (!binding.autoCompleteCustomerName.isPopupShowing()) {
+                        binding.txtCustomerNotFound.setVisibility(View.VISIBLE);
                         return;
                     } else {
-                        mCustomerNotFound.setVisibility(View.GONE);
+                        binding.txtCustomerNotFound.setVisibility(View.GONE);
                     }
                 }
             }
         });
 
 
-        mProductListAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
+        binding.autoCompleteProductPriceList.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
@@ -122,11 +130,11 @@ public class AddNewSaleOrderActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 1) {
-                    if (!mProductListAutoCompleteTextView.isPopupShowing()) {
-                        mPriceListTextView.setVisibility(View.VISIBLE);
+                    if (!binding.autoCompleteProductPriceList.isPopupShowing()) {
+                        binding.txtProductListNotFound.setVisibility(View.VISIBLE);
                         return;
                     } else {
-                        mPriceListTextView.setVisibility(View.GONE);
+                        binding.autoCompleteProductPriceList.setVisibility(View.GONE);
                     }
                 }
             }
@@ -167,7 +175,7 @@ public class AddNewSaleOrderActivity extends AppCompatActivity {
 
                             }
                         } else {
-                            Toast.makeText(AddNewSaleOrderActivity.this, Utils.getErrorMessage(jsonObject), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), Utils.getErrorMessage(jsonObject), Toast.LENGTH_SHORT).show();
                         }
                     }
                 } catch (JSONException e) {
@@ -185,7 +193,7 @@ public class AddNewSaleOrderActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 //set authorization token in with the type via Bearer token
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization", "Bearer " + Utils.getLoginDetails(AddNewSaleOrderActivity.this, Constants.ACCESS_TOKEN));
+                params.put("Authorization", "Bearer " + Utils.getLoginDetails(getContext(), Constants.ACCESS_TOKEN));
                 return params;
             }
 
@@ -222,8 +230,8 @@ public class AddNewSaleOrderActivity extends AppCompatActivity {
             test.add(customerModel.getName());
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.layout_customer_name_list, test);
-        mCustomerAutoCompleteTextView.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.layout_customer_name_list, test);
+        binding.autoCompleteCustomerName.setAdapter(adapter);
 
         getProductPriceList();
     }
@@ -254,7 +262,7 @@ public class AddNewSaleOrderActivity extends AppCompatActivity {
                                 setPriceList();
                             }
                         } else {
-                            Toast.makeText(AddNewSaleOrderActivity.this, Utils.getErrorMessage(jsonObject), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), Utils.getErrorMessage(jsonObject), Toast.LENGTH_SHORT).show();
                         }
                     }
                 } catch (JSONException e) {
@@ -272,7 +280,7 @@ public class AddNewSaleOrderActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 //set authorization token in with the type via Bearer token
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization", "Bearer " + Utils.getLoginDetails(AddNewSaleOrderActivity.this, Constants.ACCESS_TOKEN));
+                params.put("Authorization", "Bearer " + Utils.getLoginDetails(getContext(), Constants.ACCESS_TOKEN));
                 return params;
             }
 
@@ -300,8 +308,13 @@ public class AddNewSaleOrderActivity extends AppCompatActivity {
             productList.add(customerModel.getName());
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.layout_customer_name_list, productList);
-        mProductListAutoCompleteTextView.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.layout_customer_name_list, productList);
+        binding.autoCompleteProductPriceList.setAdapter(adapter);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

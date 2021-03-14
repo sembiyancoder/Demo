@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,8 +48,9 @@ public class SalesOrderFragment extends Fragment implements ViewSalesListAdapter
         mAddNewSaleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddNewSaleOrderActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(getActivity(), AddNewSaleOrderActivity.class);
+//                startActivity(intent);
+                Navigation.findNavController(v).navigate(R.id.action_nav_sales_order_to_addNewSaleOrderFragment);
             }
         });
         getSalesList();
