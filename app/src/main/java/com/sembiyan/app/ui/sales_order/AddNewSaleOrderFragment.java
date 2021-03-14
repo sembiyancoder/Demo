@@ -27,10 +27,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.sembiyan.app.R;
 import com.sembiyan.app.databinding.FragmentAddNewSaleOrderBinding;
 import com.sembiyan.app.model.CustomerModel;
+import com.sembiyan.app.model.LineModel;
 import com.sembiyan.app.model.ProductPriceModel;
 import com.sembiyan.app.ui.customer.AddNewCustomerActivity;
 import com.sembiyan.app.utilities.AppController;
 import com.sembiyan.app.utilities.Constants;
+import com.sembiyan.app.utilities.LineSingleTon;
 import com.sembiyan.app.utilities.Utils;
 import com.sembiyan.app.utilities.WebserviceEndpoints;
 
@@ -44,6 +46,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import timber.log.Timber;
+
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
@@ -53,6 +57,9 @@ public class AddNewSaleOrderFragment extends Fragment {
     private FragmentAddNewSaleOrderBinding binding;
     private List<CustomerModel> mCustomerModelList = new ArrayList<>();
     private List<ProductPriceModel> mProductPriceList = new ArrayList<>();
+
+    private NewSaleOrderAdapter mAdapter;
+    private List<LineModel> mList;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater,
@@ -66,9 +73,24 @@ public class AddNewSaleOrderFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mList = new ArrayList<>();
+        mAdapter = new NewSaleOrderAdapter(mList);
+        binding.recyclerView.setAdapter(mAdapter);
+
         inflateXMLView();
         getCustomerList();
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mList.clear();
+        mList.addAll(LineSingleTon.getInstance().getLineModels());
+        mAdapter.notifyDataSetChanged();
+
+        Timber.d("LineSingleTon: %s", LineSingleTon.getInstance().getLineModels().toString());
     }
 
     private void inflateXMLView() {

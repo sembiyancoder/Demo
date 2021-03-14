@@ -136,6 +136,13 @@
                 android:drawableRight="@drawable/ic_baseline_add_circle_outline_24"
                 android:text="Add Line Item" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/layout_line_item" />
+
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

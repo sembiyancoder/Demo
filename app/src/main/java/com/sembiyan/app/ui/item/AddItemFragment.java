@@ -1,15 +1,18 @@
 package com.sembiyan.app.ui.item;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -23,9 +26,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.sembiyan.app.R;
 import com.sembiyan.app.databinding.FragmentAddItemBinding;
 import com.sembiyan.app.model.ItemModel;
+import com.sembiyan.app.model.LineModel;
 import com.sembiyan.app.ui.sales_order.SalesOrderFragment;
 import com.sembiyan.app.utilities.AppController;
 import com.sembiyan.app.utilities.Constants;
+import com.sembiyan.app.utilities.LineSingleTon;
 import com.sembiyan.app.utilities.Utils;
 import com.sembiyan.app.utilities.WebserviceEndpoints;
 
@@ -37,6 +42,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,6 +67,25 @@ public class AddItemFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         getItemList();
+
+        binding.buttonSave.setOnClickListener(v -> {
+
+            String item = binding.autoCompleteItemName.getText().toString().trim();
+            String quantity = binding.editTextQuantity.getText().toString().trim();
+            String description = binding.editTextDescription.getText().toString().trim();
+            String rate = binding.editTextRate.getText().toString().trim();
+
+            Timber.d("#item: " + item + " #description: " + description + " #quantity: " + quantity + " #rate: " + rate);
+
+            if (Utils.validateAddLineItem(binding.autoCompleteItemName, binding.editTextQuantity, binding.editTextRate)) {
+                LineSingleTon.getInstance().setLineModel(new LineModel(item, description, Double.parseDouble(quantity), Double.parseDouble(rate)));
+                if (getActivity() != null) {
+                    getActivity().onBackPressed();
+                }
+            }else {
+                Toast.makeText(getContext(), "Choose Item", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void getItemList() {
@@ -136,6 +162,8 @@ public class AddItemFragment extends Fragment {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.layout_customer_name_list, test);
         binding.autoCompleteItemName.setAdapter(adapter);
+
+
     }
 
     private String getFields() {

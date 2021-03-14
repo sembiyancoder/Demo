@@ -1,6 +1,9 @@
 package com.sembiyan.app.utilities;
 
 import android.content.Context;
+import android.widget.AutoCompleteTextView;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,6 +64,35 @@ public class Utils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Validate Add Line Item
+     *
+     * @param item
+     * @param quantity
+     * @param rate
+     * @return true none of the field is empty otherwise false
+     */
+    public static boolean validateAddLineItem(AutoCompleteTextView item, TextInputEditText quantity, TextInputEditText rate) {
+
+        boolean isValid = true;
+        if (item.getText().toString().trim().isEmpty()) {
+            isValid = false;
+//            item.setError("Choose Item");
+        }
+
+
+        if (quantity.getText().toString().trim().isEmpty()) {
+            isValid = false;
+            quantity.setError("Enter Quantity");
+        }
+
+        if (rate.getText().toString().trim().isEmpty()) {
+            isValid = false;
+            rate.setError("Enter Rate");
+        }
+        return isValid;
     }
 
 }
