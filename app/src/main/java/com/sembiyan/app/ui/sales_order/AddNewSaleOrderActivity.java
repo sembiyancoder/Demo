@@ -21,10 +21,12 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.material.button.MaterialButton;
 import com.sembiyan.app.R;
 import com.sembiyan.app.model.CustomerModel;
 import com.sembiyan.app.model.ProductPriceModel;
 import com.sembiyan.app.ui.customer.AddNewCustomerActivity;
+import com.sembiyan.app.ui.item.AddItemActivity;
 import com.sembiyan.app.utilities.AppController;
 import com.sembiyan.app.utilities.Constants;
 import com.sembiyan.app.utilities.Utils;
@@ -46,6 +48,7 @@ public class AddNewSaleOrderActivity extends AppCompatActivity {
     private List<ProductPriceModel> mProductPriceList = new ArrayList<>();
     private AutoCompleteTextView mCustomerAutoCompleteTextView, mProductListAutoCompleteTextView;
     private TextView mCustomerNotFound, mPriceListTextView;
+    private MaterialButton mAddItemMaterialButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +65,20 @@ public class AddNewSaleOrderActivity extends AppCompatActivity {
         mPriceListTextView = findViewById(R.id.txt_product_list_not_found);
         mCustomerAutoCompleteTextView = findViewById(R.id.auto_complete_customer_name);
         mProductListAutoCompleteTextView = findViewById(R.id.auto_complete_product_price_list);
+        mAddItemMaterialButton = findViewById(R.id.btn_add_item);
 
         mAddNewCustomerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AddNewSaleOrderActivity.this, AddNewCustomerActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        mAddItemMaterialButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AddNewSaleOrderActivity.this, AddItemActivity.class);
                 startActivity(intent);
             }
         });
@@ -204,6 +216,7 @@ public class AddNewSaleOrderActivity extends AppCompatActivity {
 
     private void setCustomerNameListAdapter() {
         ArrayList<String> test = new ArrayList<>();
+
         for (int index = 0; index < mCustomerModelList.size(); index++) {
             CustomerModel customerModel = mCustomerModelList.get(index);
             test.add(customerModel.getName());
